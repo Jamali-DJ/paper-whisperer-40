@@ -3,6 +3,7 @@ import { FileText, MoreVertical, Trash2, Loader2, CheckCircle2, AlertCircle } fr
 import { formatDistanceToNow } from "date-fns";
 
 import type { Paper } from "@/lib/papers";
+import type { PaperStatus } from "@/lib/pipeline/types";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -12,11 +13,26 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 function StatusBadge({ status }: { status: Paper["status"] }) {
-  const map = {
+  const map: Record<PaperStatus, { cls: string; icon: React.ReactNode; label: string }> = {
     uploading: {
       cls: "bg-muted text-muted-foreground",
       icon: <Loader2 className="h-3 w-3 animate-spin" />,
       label: "Uploading",
+    },
+    extracting: {
+      cls: "bg-primary/15 text-primary",
+      icon: <Loader2 className="h-3 w-3 animate-spin" />,
+      label: "Extracting",
+    },
+    analyzing: {
+      cls: "bg-primary/15 text-primary",
+      icon: <Loader2 className="h-3 w-3 animate-spin" />,
+      label: "Analyzing",
+    },
+    completed: {
+      cls: "bg-emerald-500/15 text-emerald-400",
+      icon: <CheckCircle2 className="h-3 w-3" />,
+      label: "Completed",
     },
     processing: {
       cls: "bg-primary/15 text-primary",
@@ -33,13 +49,14 @@ function StatusBadge({ status }: { status: Paper["status"] }) {
       icon: <AlertCircle className="h-3 w-3" />,
       label: "Failed",
     },
-  }[status];
+  };
+  const entry = map[status] ?? map.uploading;
   return (
     <span
-      className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs ${map.cls}`}
+      className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs ${entry.cls}`}
     >
-      {map.icon}
-      {map.label}
+      {entry.icon}
+      {entry.label}
     </span>
   );
 }
