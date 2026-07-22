@@ -16,12 +16,22 @@ export type Database = {
     Tables: {
       papers: {
         Row: {
+          abstract: string | null
           authors: string | null
+          conclusions: string | null
           created_at: string
+          error_message: string | null
+          extracted_text: string | null
           file_path: string
           file_size: number | null
           id: string
+          key_findings: Json | null
           key_points: Json | null
+          keywords: string[] | null
+          methodology: string | null
+          page_count: number | null
+          processing_progress: number
+          references: Json | null
           status: Database["public"]["Enums"]["paper_status"]
           summary: string | null
           tags: string[] | null
@@ -30,12 +40,22 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          abstract?: string | null
           authors?: string | null
+          conclusions?: string | null
           created_at?: string
+          error_message?: string | null
+          extracted_text?: string | null
           file_path: string
           file_size?: number | null
           id?: string
+          key_findings?: Json | null
           key_points?: Json | null
+          keywords?: string[] | null
+          methodology?: string | null
+          page_count?: number | null
+          processing_progress?: number
+          references?: Json | null
           status?: Database["public"]["Enums"]["paper_status"]
           summary?: string | null
           tags?: string[] | null
@@ -44,12 +64,22 @@ export type Database = {
           user_id: string
         }
         Update: {
+          abstract?: string | null
           authors?: string | null
+          conclusions?: string | null
           created_at?: string
+          error_message?: string | null
+          extracted_text?: string | null
           file_path?: string
           file_size?: number | null
           id?: string
+          key_findings?: Json | null
           key_points?: Json | null
+          keywords?: string[] | null
+          methodology?: string | null
+          page_count?: number | null
+          processing_progress?: number
+          references?: Json | null
           status?: Database["public"]["Enums"]["paper_status"]
           summary?: string | null
           tags?: string[] | null
@@ -91,7 +121,14 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      paper_status: "uploading" | "processing" | "ready" | "failed"
+      paper_status:
+        | "uploading"
+        | "processing"
+        | "ready"
+        | "failed"
+        | "extracting"
+        | "analyzing"
+        | "completed"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -219,7 +256,15 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      paper_status: ["uploading", "processing", "ready", "failed"],
+      paper_status: [
+        "uploading",
+        "processing",
+        "ready",
+        "failed",
+        "extracting",
+        "analyzing",
+        "completed",
+      ],
     },
   },
 } as const

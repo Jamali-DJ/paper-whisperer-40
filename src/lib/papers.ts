@@ -1,5 +1,10 @@
 import { supabase } from "@/integrations/supabase/client";
 import type { Database } from "@/integrations/supabase/types";
+import type {
+  KeyFinding,
+  PaperReference,
+  PaperStatus,
+} from "@/lib/pipeline/types";
 
 export type Paper = {
   id: string;
@@ -8,10 +13,20 @@ export type Paper = {
   authors: string | null;
   file_path: string;
   file_size: number | null;
-  status: "uploading" | "processing" | "ready" | "failed";
+  status: PaperStatus;
   summary: string | null;
   key_points: unknown;
   tags: string[] | null;
+  abstract: string | null;
+  page_count: number | null;
+  keywords: string[] | null;
+  extracted_text: string | null;
+  key_findings: KeyFinding[] | null;
+  methodology: string | null;
+  conclusions: string | null;
+  references: PaperReference[] | null;
+  error_message: string | null;
+  processing_progress: number | null;
   created_at: string;
   updated_at: string;
 };
@@ -66,7 +81,7 @@ export async function uploadPaper(file: File): Promise<Paper> {
       title,
       file_path: path,
       file_size: file.size,
-      status: "processing",
+      status: "uploading",
     })
     .select()
     .single();
