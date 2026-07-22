@@ -4,11 +4,14 @@ import { toast } from "sonner";
 
 import { cn } from "@/lib/utils";
 import { uploadPaper } from "@/lib/papers";
+import { useServerFn } from "@tanstack/react-start";
+import { processPaper } from "@/lib/papers.functions";
 
 export function PaperUploader({ onUploaded }: { onUploaded: () => void }) {
   const [dragOver, setDragOver] = useState(false);
   const [busy, setBusy] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+  const runPipeline = useServerFn(processPaper);
 
   const handleFiles = useCallback(
     async (files: FileList | File[]) => {
@@ -26,8 +29,14 @@ export function PaperUploader({ onUploaded }: { onUploaded: () => void }) {
             toast.error(`${f.name} is over 25 MB.`);
             continue;
           }
-          await uploadPaper(f);
+          const paper = await uploadPaper(f);
           toast.success(`${f.name} uploaded — analysis started.`);
+          // Fire-and-forget: the pipeline updates the row in place; the
+          // dashboard/detail views poll for status changes.
+          runPipeline({ data: { paperId: paper.id } }).catch((err) => {
+            const message = err instanceof Error ? err.message : "Analysis failed";
+            toast.error(`${f.name}: ${message}`);
+          });
         }
         onUploaded();
       } catch (err) {
@@ -36,7 +45,7 @@ export function PaperUploader({ onUploaded }: { onUploaded: () => void }) {
         setBusy(false);
       }
     },
-    [onUploaded],
+    [onUploaded, runPipeline],
   );
 
   return (
