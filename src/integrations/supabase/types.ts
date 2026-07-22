@@ -14,6 +14,56 @@ export type Database = {
   }
   public: {
     Tables: {
+      paper_analyses: {
+        Row: {
+          content: Json | null
+          created_at: string
+          error_message: string | null
+          id: string
+          model: string | null
+          module_key: string
+          paper_id: string
+          provider: string | null
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          content?: Json | null
+          created_at?: string
+          error_message?: string | null
+          id?: string
+          model?: string | null
+          module_key: string
+          paper_id: string
+          provider?: string | null
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          content?: Json | null
+          created_at?: string
+          error_message?: string | null
+          id?: string
+          model?: string | null
+          module_key?: string
+          paper_id?: string
+          provider?: string | null
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "paper_analyses_paper_id_fkey"
+            columns: ["paper_id"]
+            isOneToOne: false
+            referencedRelation: "papers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       papers: {
         Row: {
           abstract: string | null

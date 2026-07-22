@@ -5,6 +5,8 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import { analyzePaper } from "./analyze.server";
 import { extractPaper } from "./extract.server";
 import type { PaperStatus } from "./types";
+import { ANALYSIS_MODULE_KEYS, type AnalysisModuleKey } from "../ai/modules";
+import { generateAllAnalysisModules } from "../ai/generate.server";
 
 type RunInput = {
   paperId: string;
@@ -76,6 +78,23 @@ export async function runPipeline({ paperId, supabase, userId }: RunInput) {
       conclusions: analysis.conclusions,
       references: analysis.references,
       tags: analysis.tags,
+    });
+
+    // Fire off AI analysis modules. Per-module status lives in paper_analyses,
+    // so the paper itself stays "completed" even if one module errors.
+    generateAllAnalysisModules({
+      supabase,
+      paperId,
+      userId,
+      paper: {
+        title: metadata.title,
+        authors: metadata.authors,
+        abstract: metadata.abstract,
+        text,
+      },
+      keys: ANALYSIS_MODULE_KEYS as AnalysisModuleKey[],
+    }).catch((err) => {
+      console.error("[pipeline] analysis modules failed", err);
     });
 
     return { ok: true as const };

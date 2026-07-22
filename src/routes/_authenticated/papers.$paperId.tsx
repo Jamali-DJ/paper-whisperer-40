@@ -11,7 +11,7 @@ import {
   Trash2,
 } from "lucide-react";
 import { toast } from "sonner";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { deletePaper, getPaper, getSignedUrl } from "@/lib/papers";
 import { processPaper } from "@/lib/papers.functions";
@@ -19,6 +19,13 @@ import type { KeyFinding, PaperReference } from "@/lib/pipeline/types";
 import { PaperStatusStepper } from "@/components/paper-status-stepper";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ANALYSIS_MODULES, type AnalysisModuleKey } from "@/lib/ai/modules";
+import { listAnalyses, type PaperAnalysisRow } from "@/lib/analyses";
+import {
+  generateAllAnalysisModulesFn,
+  regenerateAnalysisModule,
+} from "@/lib/analyses.functions";
+import { AnalysisModuleCard } from "@/components/analysis-module-card";
 
 export const Route = createFileRoute("/_authenticated/papers/$paperId")({
   head: () => ({
@@ -36,6 +43,10 @@ function PaperDetail() {
   const qc = useQueryClient();
   const [pdfUrl, setPdfUrl] = useState<string | null>(null);
   const runPipeline = useServerFn(processPaper);
+  const runOneModule = useServerFn(regenerateAnalysisModule);
+  const runAllModules = useServerFn(generateAllAnalysisModulesFn);
+  const [busyKeys, setBusyKeys] = useState<Record<string, boolean>>({});
+  const [runningAll, setRunningAll] = useState(false);
 
   const {
     data: paper,
@@ -51,6 +62,33 @@ function PaperDetail() {
         : false;
     },
   });
+
+  const {
+    data: analyses,
+    error: analysesError,
+  } = useQuery({
+    queryKey: ["papers", paperId, "analyses"],
+    queryFn: () => listAnalyses(paperId),
+    refetchInterval: (q) => {
+      const rows = (q.state.data as PaperAnalysisRow[] | undefined) ?? [];
+      const anyRunning = rows.some(
+        (r) => r.status === "generating" || r.status === "pending",
+      );
+      return anyRunning || runningAll ? 2500 : false;
+    },
+  });
+
+  useEffect(() => {
+    if (analysesError) {
+      console.error(analysesError);
+    }
+  }, [analysesError]);
+
+  const rowsByKey = useMemo(() => {
+    const map = new Map<string, PaperAnalysisRow>();
+    (analyses ?? []).forEach((r) => map.set(r.module_key, r));
+    return map;
+  }, [analyses]);
 
   useEffect(() => {
     if (paper?.file_path) getSignedUrl(paper.file_path).then(setPdfUrl).catch(() => {});
@@ -99,6 +137,33 @@ function PaperDetail() {
 
   const isDone = paper.status === "completed" || paper.status === "ready";
   const isFailed = paper.status === "failed";
+
+  async function regenerateModule(key: AnalysisModuleKey) {
+    setBusyKeys((b) => ({ ...b, [key]: true }));
+    try {
+      const res = await runOneModule({ data: { paperId, moduleKey: key } });
+      if (res.ok) toast.success("Regenerated");
+      else toast.error(res.error ?? "Generation failed");
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Generation failed");
+    } finally {
+      setBusyKeys((b) => ({ ...b, [key]: false }));
+      qc.invalidateQueries({ queryKey: ["papers", paperId, "analyses"] });
+    }
+  }
+
+  async function regenerateAll() {
+    setRunningAll(true);
+    try {
+      await runAllModules({ data: { paperId } });
+      toast.success("All modules regenerated");
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Regeneration failed");
+    } finally {
+      setRunningAll(false);
+      qc.invalidateQueries({ queryKey: ["papers", paperId, "analyses"] });
+    }
+  }
 
   return (
     <div className="space-y-6">
@@ -164,6 +229,7 @@ function PaperDetail() {
       <Tabs defaultValue="overview" className="w-full">
         <TabsList className="flex-wrap">
           <TabsTrigger value="overview">Overview</TabsTrigger>
+          <TabsTrigger value="ai">AI Analysis</TabsTrigger>
           <TabsTrigger value="abstract">Abstract</TabsTrigger>
           <TabsTrigger value="findings">Key Findings</TabsTrigger>
           <TabsTrigger value="methodology">Methodology</TabsTrigger>
@@ -177,6 +243,43 @@ function PaperDetail() {
               {paper.summary ?? "A concise AI-generated overview will appear here."}
             </p>
           </Section>
+        </TabsContent>
+
+        <TabsContent value="ai" className="mt-4">
+          <div className="mb-4 flex flex-wrap items-center justify-between gap-2 rounded-2xl border border-border bg-card/60 p-4">
+            <div>
+              <p className="text-sm font-medium text-foreground">AI analysis modules</p>
+              <p className="text-xs text-muted-foreground">
+                Powered by the pluggable AIService — swap providers without touching the UI.
+              </p>
+            </div>
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={regenerateAll}
+              disabled={runningAll || !isDone}
+            >
+              {runningAll ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <RefreshCw className="h-4 w-4" />
+              )}
+              Regenerate all
+            </Button>
+          </div>
+          <div className="space-y-3">
+            {ANALYSIS_MODULES.map((mod, i) => (
+              <AnalysisModuleCard
+                key={mod.key}
+                module={mod}
+                row={rowsByKey.get(mod.key) ?? null}
+                paperTitle={paper.title}
+                regenerating={!!busyKeys[mod.key]}
+                onRegenerate={() => regenerateModule(mod.key)}
+                defaultOpen={i === 0}
+              />
+            ))}
+          </div>
         </TabsContent>
 
         <TabsContent value="abstract" className="mt-4">
