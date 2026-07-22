@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { FileText, MoreVertical, Trash2, Loader2, CheckCircle2, AlertCircle } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
+import type * as React from "react";
 
 import type { Paper } from "@/lib/papers";
 import type { PaperStatus } from "@/lib/pipeline/types";
