@@ -26,6 +26,7 @@ import {
   regenerateAnalysisModule,
 } from "@/lib/analyses.functions";
 import { AnalysisModuleCard } from "@/components/analysis-module-card";
+import { PaperChat } from "@/components/paper-chat";
 
 export const Route = createFileRoute("/_authenticated/papers/$paperId")({
   head: () => ({
@@ -230,6 +231,7 @@ function PaperDetail() {
         <TabsList className="flex-wrap">
           <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="ai">AI Analysis</TabsTrigger>
+          <TabsTrigger value="chat">Chat</TabsTrigger>
           <TabsTrigger value="abstract">Abstract</TabsTrigger>
           <TabsTrigger value="findings">Key Findings</TabsTrigger>
           <TabsTrigger value="methodology">Methodology</TabsTrigger>
@@ -280,6 +282,14 @@ function PaperDetail() {
               />
             ))}
           </div>
+        </TabsContent>
+
+        <TabsContent value="chat" className="mt-4">
+          <PaperChat
+            paperId={paperId}
+            paperTitle={paper.title}
+            ready={isDone}
+          />
         </TabsContent>
 
         <TabsContent value="abstract" className="mt-4">
