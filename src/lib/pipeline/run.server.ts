@@ -7,6 +7,7 @@ import { extractPaper } from "./extract.server";
 import type { PaperStatus } from "./types";
 import { ANALYSIS_MODULE_KEYS, type AnalysisModuleKey } from "../ai/modules";
 import { generateAllAnalysisModules } from "../ai/generate.server";
+import { indexPaperForRAG } from "../rag/index-paper.server";
 
 type RunInput = {
   paperId: string;
@@ -64,6 +65,19 @@ export async function runPipeline({ paperId, supabase, userId }: RunInput) {
       page_count: metadata.pageCount,
       extracted_text: text.slice(0, 250_000),
     });
+
+    // Index chunks for RAG chat. Non-blocking failure — chat surfaces the error.
+    try {
+      await indexPaperForRAG({
+        supabase,
+        paperId,
+        userId,
+        text,
+        pageCount: metadata.pageCount,
+      });
+    } catch (err) {
+      console.error("[pipeline] RAG indexing failed", err);
+    }
 
     // Stage 2: analyze
     await setStage(supabase, paperId, "analyzing");
