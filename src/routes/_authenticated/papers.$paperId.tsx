@@ -27,6 +27,7 @@ import {
 } from "@/lib/analyses.functions";
 import { AnalysisModuleCard } from "@/components/analysis-module-card";
 import { PaperChat } from "@/components/paper-chat";
+import { StudyPanel } from "@/components/study/study-panel";
 
 export const Route = createFileRoute("/_authenticated/papers/$paperId")({
   head: () => ({
@@ -232,6 +233,7 @@ function PaperDetail() {
           <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="ai">AI Analysis</TabsTrigger>
           <TabsTrigger value="chat">Chat</TabsTrigger>
+          <TabsTrigger value="study">Study</TabsTrigger>
           <TabsTrigger value="abstract">Abstract</TabsTrigger>
           <TabsTrigger value="findings">Key Findings</TabsTrigger>
           <TabsTrigger value="methodology">Methodology</TabsTrigger>
@@ -290,6 +292,10 @@ function PaperDetail() {
             paperTitle={paper.title}
             ready={isDone}
           />
+        </TabsContent>
+
+        <TabsContent value="study" className="mt-4">
+          <StudyPanel paperId={paperId} paperTitle={paper.title} ready={isDone} />
         </TabsContent>
 
         <TabsContent value="abstract" className="mt-4">
