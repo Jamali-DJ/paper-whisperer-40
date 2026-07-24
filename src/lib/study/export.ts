@@ -5,8 +5,8 @@ import type {
   QuizAttemptRow,
   QuizQuestionRow,
   QuizRow,
-  StudyStats,
 } from "./types";
+import type { StudyStats } from "./stats";
 
 function download(filename: string, mime: string, body: BlobPart) {
   const blob = new Blob([body], { type: mime });
