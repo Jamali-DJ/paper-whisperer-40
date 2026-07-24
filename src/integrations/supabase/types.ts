@@ -93,6 +93,115 @@ export type Database = {
           },
         ]
       }
+      flashcard_reviews: {
+        Row: {
+          flashcard_id: string
+          id: string
+          new_mastery: number | null
+          next_review_at: string | null
+          previous_mastery: number | null
+          rating: string
+          reviewed_at: string
+          user_id: string
+        }
+        Insert: {
+          flashcard_id: string
+          id?: string
+          new_mastery?: number | null
+          next_review_at?: string | null
+          previous_mastery?: number | null
+          rating: string
+          reviewed_at?: string
+          user_id: string
+        }
+        Update: {
+          flashcard_id?: string
+          id?: string
+          new_mastery?: number | null
+          next_review_at?: string | null
+          previous_mastery?: number | null
+          rating?: string
+          reviewed_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "flashcard_reviews_flashcard_id_fkey"
+            columns: ["flashcard_id"]
+            isOneToOne: false
+            referencedRelation: "flashcards"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      flashcards: {
+        Row: {
+          back: string
+          created_at: string
+          difficulty: string
+          favorite: boolean
+          front: string
+          id: string
+          last_reviewed_at: string | null
+          mastery: number
+          next_review_at: string | null
+          page_end: number | null
+          page_start: number | null
+          paper_id: string
+          position: number
+          review_count: number
+          section: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          back: string
+          created_at?: string
+          difficulty?: string
+          favorite?: boolean
+          front: string
+          id?: string
+          last_reviewed_at?: string | null
+          mastery?: number
+          next_review_at?: string | null
+          page_end?: number | null
+          page_start?: number | null
+          paper_id: string
+          position?: number
+          review_count?: number
+          section?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          back?: string
+          created_at?: string
+          difficulty?: string
+          favorite?: boolean
+          front?: string
+          id?: string
+          last_reviewed_at?: string | null
+          mastery?: number
+          next_review_at?: string | null
+          page_end?: number | null
+          page_start?: number | null
+          paper_id?: string
+          position?: number
+          review_count?: number
+          section?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "flashcards_paper_id_fkey"
+            columns: ["paper_id"]
+            isOneToOne: false
+            referencedRelation: "papers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       paper_analyses: {
         Row: {
           content: Json | null
@@ -288,6 +397,195 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      quiz_attempts: {
+        Row: {
+          answers: Json
+          completed_at: string
+          created_at: string
+          duration_sec: number
+          id: string
+          paper_id: string
+          quiz_id: string
+          score: number
+          total: number
+          user_id: string
+        }
+        Insert: {
+          answers?: Json
+          completed_at?: string
+          created_at?: string
+          duration_sec?: number
+          id?: string
+          paper_id: string
+          quiz_id: string
+          score?: number
+          total?: number
+          user_id: string
+        }
+        Update: {
+          answers?: Json
+          completed_at?: string
+          created_at?: string
+          duration_sec?: number
+          id?: string
+          paper_id?: string
+          quiz_id?: string
+          score?: number
+          total?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "quiz_attempts_paper_id_fkey"
+            columns: ["paper_id"]
+            isOneToOne: false
+            referencedRelation: "papers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "quiz_attempts_quiz_id_fkey"
+            columns: ["quiz_id"]
+            isOneToOne: false
+            referencedRelation: "quizzes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      quiz_questions: {
+        Row: {
+          citation: Json | null
+          correct_answer: string
+          created_at: string
+          difficulty: string
+          explanation: string | null
+          id: string
+          options: Json | null
+          position: number
+          question: string
+          quiz_id: string
+          type: string
+          user_id: string
+        }
+        Insert: {
+          citation?: Json | null
+          correct_answer: string
+          created_at?: string
+          difficulty?: string
+          explanation?: string | null
+          id?: string
+          options?: Json | null
+          position?: number
+          question: string
+          quiz_id: string
+          type: string
+          user_id: string
+        }
+        Update: {
+          citation?: Json | null
+          correct_answer?: string
+          created_at?: string
+          difficulty?: string
+          explanation?: string | null
+          id?: string
+          options?: Json | null
+          position?: number
+          question?: string
+          quiz_id?: string
+          type?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "quiz_questions_quiz_id_fkey"
+            columns: ["quiz_id"]
+            isOneToOne: false
+            referencedRelation: "quizzes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      quizzes: {
+        Row: {
+          config: Json
+          created_at: string
+          error_message: string | null
+          id: string
+          paper_id: string
+          status: string
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          config?: Json
+          created_at?: string
+          error_message?: string | null
+          id?: string
+          paper_id: string
+          status?: string
+          title?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          config?: Json
+          created_at?: string
+          error_message?: string | null
+          id?: string
+          paper_id?: string
+          status?: string
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "quizzes_paper_id_fkey"
+            columns: ["paper_id"]
+            isOneToOne: false
+            referencedRelation: "papers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      study_sessions: {
+        Row: {
+          created_at: string
+          duration_sec: number
+          id: string
+          kind: string
+          meta: Json
+          paper_id: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          duration_sec?: number
+          id?: string
+          kind: string
+          meta?: Json
+          paper_id?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          duration_sec?: number
+          id?: string
+          kind?: string
+          meta?: Json
+          paper_id?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "study_sessions_paper_id_fkey"
+            columns: ["paper_id"]
+            isOneToOne: false
+            referencedRelation: "papers"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {
