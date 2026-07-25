@@ -58,8 +58,8 @@ export type PaperReference = {
 export type PaperAnalysis = {
   summary: string;
   keyFindings: KeyFinding[];
-  methodology: string;
-  conclusions: string;
+  methodology: string | null;
+  conclusions: string | null;
   references: PaperReference[];
   tags: string[];
 };
