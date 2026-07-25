@@ -323,7 +323,7 @@ function PaperDetail() {
                 {paper.methodology}
               </p>
             ) : (
-              <Empty message="Methodology section not detected." />
+              <Empty message="No explicit methodology section was found." />
             )}
           </Section>
         </TabsContent>
@@ -335,7 +335,7 @@ function PaperDetail() {
                 {paper.conclusions}
               </p>
             ) : (
-              <Empty message="Conclusions section not detected." />
+              <Empty message="No reliable conclusion could be inferred from this document." />
             )}
           </Section>
         </TabsContent>
