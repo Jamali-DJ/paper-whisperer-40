@@ -3,9 +3,9 @@
 // so the retrieval + citation quality is easy to tune.
 import type { Chunk } from "./types";
 
-const TARGET_CHARS = 900;
-const OVERLAP_CHARS = 150;
-const MIN_CHUNK_CHARS = 200;
+const TARGET_CHARS = 1200;
+const OVERLAP_CHARS = 240;
+const MIN_CHUNK_CHARS = 240;
 
 function estimatePage(offset: number, textLength: number, pageCount: number | null): number | null {
   if (!pageCount || pageCount <= 0 || textLength <= 0) return null;
@@ -36,8 +36,15 @@ export function chunkPaperText(input: {
   paperId: string;
   text: string;
   pageCount: number | null;
+  /** If set, chunking stops at this offset — used to exclude the references
+   *  block from body chunks. Pass `null`/`undefined` to chunk the full text. */
+  bodyEndOffset?: number | null;
 }): Omit<Chunk, "id" | "embedding">[] {
-  const clean = input.text.replace(/\r\n/g, "\n");
+  const source = input.text.replace(/\r\n/g, "\n");
+  const clean =
+    input.bodyEndOffset != null && input.bodyEndOffset > 0
+      ? source.slice(0, input.bodyEndOffset)
+      : source;
   const chunks: Omit<Chunk, "id" | "embedding">[] = [];
   let start = 0;
   let index = 0;
@@ -55,7 +62,9 @@ export function chunkPaperText(input: {
       });
     }
     if (end >= clean.length) break;
-    start = Math.max(end - OVERLAP_CHARS, end);
+    // Advance with overlap so consecutive chunks share ~OVERLAP_CHARS of context.
+    const nextStart = end - OVERLAP_CHARS;
+    start = nextStart > start ? nextStart : end;
   }
   return chunks;
 }
