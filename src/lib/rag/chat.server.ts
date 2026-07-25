@@ -54,7 +54,7 @@ export async function streamRAGChat(input: ChatStreamInput) {
     paperId: input.paperId,
     userId: input.userId,
     query,
-    topK: 6,
+    topK: 8,
   });
 
   const { systemMessage, citations } = buildChatPrompt({
