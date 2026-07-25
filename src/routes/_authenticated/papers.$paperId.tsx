@@ -323,7 +323,7 @@ function PaperDetail() {
                 {paper.methodology}
               </p>
             ) : (
-              <Empty message="Methodology section not detected." />
+              <Empty message="No explicit methodology section was found." />
             )}
           </Section>
         </TabsContent>
@@ -335,7 +335,7 @@ function PaperDetail() {
                 {paper.conclusions}
               </p>
             ) : (
-              <Empty message="Conclusions section not detected." />
+              <Empty message="No reliable conclusion could be inferred from this document." />
             )}
           </Section>
         </TabsContent>
@@ -405,7 +405,9 @@ function FindingsList({ findings }: { findings: KeyFinding[] | null }) {
 
 function ReferencesList({ references }: { references: PaperReference[] | null }) {
   if (!references || references.length === 0) {
-    return <Empty message="No references were detected in this document." />;
+    return (
+      <Empty message="No references were detected in this document. This may occur because the PDF is scanned, uses an unsupported bibliography format, or does not contain a machine-readable References section." />
+    );
   }
   return (
     <ol className="space-y-2 text-sm">

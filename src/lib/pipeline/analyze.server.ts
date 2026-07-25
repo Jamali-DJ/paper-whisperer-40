@@ -66,6 +66,31 @@ function sentenceSummary(text: string, maxSentences: number): string {
   return sentences.slice(0, maxSentences).join(" ");
 }
 
+// Heuristic methodology inference: scan sentences for method-y verbs / nouns
+// and keep a short block. Returns null when signal is weak.
+function inferMethodology(text: string): string | null {
+  const cues = /\b(we (?:use|used|propose|proposed|apply|applied|implement|implemented|train|trained|evaluate|evaluated|conduct|conducted|design|designed|develop|developed|analy[sz]e[d]?|collect|collected|measure[d]?|compare[d]?)|our (?:approach|method|model|framework|algorithm|pipeline|architecture|study|experiment[s]?|analysis)|the (?:proposed|following) (?:method|approach|model|framework|algorithm)|dataset|participants|procedure|experimental setup|training data|hyperparameter|baseline[s]?)\b/i;
+  const sentences = text
+    .replace(/\s+/g, " ")
+    .split(/(?<=[.!?])\s+(?=[A-Z0-9])/)
+    .map((s) => s.trim())
+    .filter((s) => s.length > 40 && s.length < 400);
+  const hits = sentences.filter((s) => cues.test(s)).slice(0, 6);
+  if (hits.length < 3) return null;
+  return condense(hits.join(" "), 1400);
+}
+
+// Heuristic conclusion inference: prefer explicit discussion tail, else the
+// final portion of the body. Returns null if the paper is too short.
+function inferConclusions(text: string): string | null {
+  const clean = text.replace(/\s+/g, " ").trim();
+  if (clean.length < 400) return null;
+  const tail = clean.slice(-2400);
+  const summary = sentenceSummary(tail, 5);
+  if (summary.length < 120) return null;
+  return condense(summary, 1400);
+}
+
 function extractKeyFindings(sections: Section[], fallback: string): KeyFinding[] {
   const source =
     pickSection(sections, ["results", "findings", "discussion"]) ?? fallback;
@@ -104,12 +129,16 @@ export async function analyzePaper(input: {
       : sentenceSummary(text, 6) || "No summary available.";
 
   const methodology =
-    pickSection(sections, ["methods", "methodology", "materials and methods", "experiments"]) ??
-    "Methodology section not detected in this document.";
+    pickSection(sections, [
+      "methods",
+      "methodology",
+      "materials and methods",
+      "experiments",
+    ]) ?? inferMethodology(text);
 
   const conclusions =
     pickSection(sections, ["conclusion", "conclusions", "discussion"]) ??
-    "Conclusion section not detected in this document.";
+    inferConclusions(text);
 
   return {
     summary,
