@@ -3,6 +3,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 
 import { chunkPaperText } from "./chunker.server";
 import { getEmbeddingProvider } from "./embeddings.server";
+import { detectReferencesStart } from "../pipeline/references.server";
 
 export async function indexPaperForRAG(input: {
   supabase: SupabaseClient;
@@ -11,10 +12,14 @@ export async function indexPaperForRAG(input: {
   text: string;
   pageCount: number | null;
 }) {
+  // Exclude the references block from RAG so citations don't crowd out real
+  // paper content in retrieval results.
+  const bodyEndOffset = detectReferencesStart(input.text);
   const draftChunks = chunkPaperText({
     paperId: input.paperId,
     text: input.text,
     pageCount: input.pageCount,
+    bodyEndOffset,
   });
   if (draftChunks.length === 0) return { count: 0 };
 
