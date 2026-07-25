@@ -2,6 +2,7 @@
 // extracted text; swap the body of `analyzePaper` with a call to your LLM
 // provider (e.g. Lovable AI Gateway) without changing any callers.
 import type { KeyFinding, PaperAnalysis, PaperMetadata, PaperReference } from "./types";
+import { extractReferences } from "./references.server";
 
 const SECTION_HEADS = [
   "introduction",
@@ -79,15 +80,9 @@ function extractKeyFindings(sections: Section[], fallback: string): KeyFinding[]
   }));
 }
 
-function extractReferences(text: string): PaperReference[] {
-  const refIdx = text.search(/\n\s*references\b/i);
-  if (refIdx === -1) return [];
-  const tail = text.slice(refIdx);
-  const lines = tail
-    .split(/\n\s*(?=\[\d+\]|\d+\.\s+[A-Z])/)
-    .map((l) => l.replace(/\s+/g, " ").trim())
-    .filter((l) => l.length > 30 && l.length < 600);
-  return lines.slice(1, 51).map((raw, i) => ({ index: i + 1, raw }));
+function extractReferencesFromText(text: string): PaperReference[] {
+  const { entries } = extractReferences({ text, pageCount: null });
+  return entries.slice(0, 200).map((e) => ({ index: e.index, raw: e.raw }));
 }
 
 function deriveTags(metadata: PaperMetadata): string[] {
@@ -121,7 +116,7 @@ export async function analyzePaper(input: {
     keyFindings: extractKeyFindings(sections, summary),
     methodology,
     conclusions,
-    references: extractReferences(text),
+    references: extractReferencesFromText(text),
     tags: deriveTags(metadata),
   };
 }
