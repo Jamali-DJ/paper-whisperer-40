@@ -39,9 +39,42 @@ Users can upload PDF research papers and instantly receive:
 
 ---
 
-## 📷 Screenshots
+## 📸 Screenshots
 
-Coming soon.
+### 🏠 Dashboard
+![Dashboard](screenshots/Dashboard.jpeg)
+
+---
+
+### 📄 Upload PDF
+![Upload PDF](screenshots/PDF.jpeg)
+
+---
+
+### 📝 AI Summary
+![Summary](screenshots/Summary.jpeg)
+
+---
+
+### 🔑 Key Findings
+![Key Findings](screenshots/Key%20Findings.jpeg)
+
+---
+
+### 🧠 Flashcards
+![Flashcards](screenshots/Flashcards.jpeg)
+
+---
+
+### ❓ Quiz Generator
+![Quiz](screenshots/Quiz.jpeg)
+
+---
+
+### 💬 AI Chat
+![Chat](screenshots/Chat.jpeg)
+
+## 👨‍💻 Author
 
 ---
 
@@ -186,43 +219,6 @@ https://github.com/Jamali-DJ
 ⭐ If you found this project useful, please consider giving it a star on GitHub.
 
 ---
-
-## 📸 Screenshots
-
-### 🏠 Dashboard
-![Dashboard](screenshots/Dashboard.jpeg)
-
----
-
-### 📄 Upload PDF
-![Upload PDF](screenshots/PDF.jpeg)
-
----
-
-### 📝 AI Summary
-![Summary](screenshots/Summary.jpeg)
-
----
-
-### 🔑 Key Findings
-![Key Findings](screenshots/Key%20Findings.jpeg)
-
----
-
-### 🧠 Flashcards
-![Flashcards](screenshots/Flashcards.jpeg)
-
----
-
-### ❓ Quiz Generator
-![Quiz](screenshots/Quiz.jpeg)
-
----
-
-### 💬 AI Chat
-![Chat](screenshots/Chat.jpeg)
-
-## 👨‍💻 Author
 
 Muhammad Dawood
 
