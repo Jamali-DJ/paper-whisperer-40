@@ -187,6 +187,41 @@ https://github.com/Jamali-DJ
 
 ---
 
+## 📸 Screenshots
+
+### 🏠 Dashboard
+![Dashboard](screenshots/Dashboard.jpeg)
+
+---
+
+### 📄 Upload PDF
+![Upload PDF](screenshots/PDF.jpeg)
+
+---
+
+### 📝 AI Summary
+![Summary](screenshots/Summary.jpeg)
+
+---
+
+### 🔑 Key Findings
+![Key Findings](screenshots/Key%20Findings.jpeg)
+
+---
+
+### 🧠 Flashcards
+![Flashcards](screenshots/Flashcards.jpeg)
+
+---
+
+### ❓ Quiz Generator
+![Quiz](screenshots/Quiz.jpeg)
+
+---
+
+### 💬 AI Chat
+![Chat](screenshots/Chat.jpeg)
+
 ## 👨‍💻 Author
 
 Muhammad Dawood
