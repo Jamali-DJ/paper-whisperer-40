@@ -205,7 +205,7 @@ You are free to use, modify, and distribute this software under the terms of the
 
 # 👨‍💻 Author
 
-**Muhammad Adam Jamali**
+**Muhammad Dawood Jamali**
 
 Bachelor of Science in Agriculture (Agronomy)
 
