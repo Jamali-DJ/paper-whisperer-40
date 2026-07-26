@@ -226,12 +226,12 @@ export async function generateQuizForPaper(input: {
       prompt,
       maxTokens: 100000,
     });
-    const parsedRaw = extractJson(res.text) as GenQuestion[];
-    if (!Array.isArray(parsedRaw) || parsedRaw.length === 0)
+    const parsed = extractJson(res.text) as GenQuestion[];
+    if (!Array.isArray(parsed) || parsed.length === 0)
       throw new Error("AI returned no questions.");
-    const parsed = parsedRaw.slice(0, count);
+    const questions = parsed.slice(0, count);
 
-    const rows = parsed
+    const rows = questions
       .filter(
         (q) =>
           q &&
