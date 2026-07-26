@@ -1,29 +1,100 @@
-# Welcome to your Lovable project
+# 📄 Paper Pal AI
 
-This project was built with [Lovable](https://lovable.dev).
+Paper Pal AI is an AI-powered web application that helps students, researchers, and professionals understand research papers in seconds.
 
-## Build with Lovable
+Users can upload PDF research papers and instantly receive:
 
-Open your project in the [Lovable editor](https://lovable.dev) and keep building.
+- 📝 AI-generated summaries
+- ❓ Multiple Choice Questions (MCQs)
+- 📚 Flashcards
+- 🧠 Key concepts
+- 📖 Important definitions
+- 🎯 Quiz mode for self-testing
 
-- **Ship faster**: describe what you want to build and Lovable handles the code.
-- **Stay in sync**: connect the project to GitHub and every change made in Lovable is committed straight to your repository.
-- **Full ownership**: this code is yours. Push to your repository and your changes sync back into Lovable, ready for your next prompt.
+---
 
-## Development
+## 🚀 Features
 
-Prefer working locally? You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
+- Upload PDF research papers
+- AI-generated summaries
+- Generate high-quality MCQs
+- Interactive flashcards
+- Quiz mode
+- Search uploaded papers
+- Modern responsive UI
+- Secure authentication
+- Cloud storage using Supabase
 
-```sh
-git clone <this-repository-url>
-cd <repository-name>
-npm i
+---
+
+## 🛠 Tech Stack
+
+- React
+- TypeScript
+- Vite
+- Tailwind CSS
+- Supabase
+- OpenAI API
+- Lovable
+
+---
+
+## 📷 Screenshots
+
+Coming soon.
+
+---
+
+## 🌐 Live Demo
+
+https://paper-whisperer-40.lovable.app/
+
+---
+
+## ⚙ Installation
+
+Clone the repository
+
+```bash
+git clone https://github.com/Jamali-DJ/paper-whisperer-40.git
+```
+
+Install dependencies
+
+```bash
+npm install
+```
+
+Run the project
+
+```bash
 npm run dev
 ```
 
-## Built with
+---
 
-- TanStack Start
-- TypeScript
-- React
-- Tailwind CSS
+## 📁 Project Structure
+
+```
+src/
+public/
+supabase/
+```
+
+---
+
+## 🤝 Contributing
+
+Pull requests are welcome.
+
+---
+
+## 📄 License
+
+MIT License
+
+---
+
+## 👨‍💻 Author
+
+Muhammad Dawood
