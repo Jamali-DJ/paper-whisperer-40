@@ -1,0 +1,1 @@
+CREATE POLICY "Users update own paper files" ON storage.objects FOR UPDATE TO authenticated USING (bucket_id = 'papers' AND (storage.foldername(name))[1] = (auth.uid())::text) WITH CHECK (bucket_id = 'papers' AND (storage.foldername(name))[1] = (auth.uid())::text);
