@@ -224,7 +224,7 @@ export async function generateQuizForPaper(input: {
     const res = await ai.generate({
       system: QUIZ_SYSTEM,
       prompt,
-      maxTokens: 4000,
+      maxTokens: 100000,
     });
     const parsed = extractJson(res.text) as GenQuestion[];
     if (!Array.isArray(parsed) || parsed.length === 0)
